@@ -1,0 +1,4 @@
+Any Large Language Model, Coding Assistant, Agent, or otherwise Developer interacting with this repository should adhere strictly to the rules outlined here.
+1. Read PLAN.md and README.md for context about the current state of the software, as well as information about the tech stack
+2. Adhere strictly to predetermined conventions in the software. If you are unsure how to format a class, variable, or need to check how to do logging, error handling, etc, please reference README.md, or look for examples of similar situations in the existing code. 
+3. Before beginning to write code or tackle a problem, clarify unknown variables and assumptions with the user. Ensure that you are on the same page about the problem at hand, and the solution being planned to solve it, before making any changes. Wait for the user to inform you that you are ready to begin implementation before you commence. 

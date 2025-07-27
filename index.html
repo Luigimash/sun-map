@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sun Azimuth Street Mapping</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="./src/styles/main.css">
+</head>
+<body>
+    <div id="app">
+        <header class="header">
+            <h1>Sun Azimuth Street Mapping</h1>
+            <div class="controls">
+                <div class="control-group">
+                    <label for="date-picker">Date:</label>
+                    <input type="date" id="date-picker" />
+                </div>
+                <div class="control-group">
+                    <label for="time-toggle">Time:</label>
+                    <select id="time-toggle">
+                        <option value="sunrise">Sunrise</option>
+                        <option value="sunset">Sunset</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <button id="update-map">Update Map</button>
+                </div>
+            </div>
+        </header>
+        <main>
+            <div id="map"></div>
+            <div class="legend">
+                <h3>Street Alignment</h3>
+                <div class="legend-gradient">
+                    <span class="legend-label">Perfect</span>
+                    <div class="legend-bar"></div>
+                    <span class="legend-label">Perpendicular</span>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script type="module" src="./src/main.js"></script>
+</body>
+</html>
