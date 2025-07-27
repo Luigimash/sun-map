@@ -94,6 +94,10 @@ export class MapManager {
      */
     addStreetSegments(segments) {
         segments.forEach(segment => {
+            if (segment.alignmentScore <= 0.5) {
+                return
+            }
+
             const color = this.getSegmentColor(segment.alignmentScore);
             const weight = this.getSegmentWeight(segment.highway);
             
@@ -103,7 +107,7 @@ export class MapManager {
             ], {
                 color: color,
                 weight: weight,
-                opacity: 0.8
+                opacity: 1.0
             });
 
             // Add popup with segment info
@@ -139,13 +143,13 @@ export class MapManager {
      */
     getSegmentWeight(highway) {
         const weights = {
-            primary: 4,
-            secondary: 3,
-            tertiary: 2,
-            residential: 2,
-            footway: 1,
-            cycleway: 1,
-            path: 1
+            primary: 5,
+            secondary: 5,
+            tertiary: 5,
+            residential: 5,
+            footway: 5,
+            cycleway: 5,
+            path: 5
         };
         
         return weights[highway] || 2;

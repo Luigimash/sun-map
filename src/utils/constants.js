@@ -1,9 +1,9 @@
 export const CONFIG = {
     map: {
         defaultZoom: 13,
-        maxZoom: 18,
-        minZoom: 10,
-        defaultCenter: [40.7128, -74.0060] // New York City
+        maxZoom: 19,
+        minZoom: 14,
+        defaultCenter: [43.47299, -80.53950] // E7
     },
     colors: {
         highAlignment: '#FF6B35',  // Orange
