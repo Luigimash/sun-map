@@ -1,3 +1,6 @@
+import { CONFIG } from '../utils/constants.js';
+import { generateHslGradient } from '../utils/colors.js';
+
 /**
  * UI component management and user interactions
  */
@@ -32,6 +35,9 @@ export class UIManager {
 
         // Set up event listeners
         this.setupEventListeners();
+
+        // Initialize legend gradient
+        this.initializeLegendGradient();
 
         this.isInitialized = true;
         console.log('UI Manager initialized');
@@ -246,6 +252,21 @@ export class UIManager {
                 infoElement.style.display = 'none';
             }
         }, duration);
+    }
+
+    /**
+     * Initialize legend gradient with HSL-based colors
+     */
+    initializeLegendGradient() {
+        const legendBar = document.querySelector('.legend-bar');
+        if (legendBar) {
+            const gradient = generateHslGradient(
+                CONFIG.gradient.highAlignment,
+                CONFIG.gradient.lowAlignment,
+                20 // More steps for smoother gradient
+            );
+            legendBar.style.background = gradient;
+        }
     }
 
     /**

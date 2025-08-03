@@ -1,5 +1,6 @@
 import L from 'leaflet';
 import { CONFIG } from '../utils/constants.js';
+import { interpolateColorHsl, interpolateOpacityBezier } from '../utils/colors.js';
 
 /**
  * Initialize and manage the Leaflet map
@@ -94,11 +95,13 @@ export class MapManager {
      */
     addStreetSegments(segments) {
         segments.forEach(segment => {
-            if (segment.alignmentScore <= 0.5) {
-                return
+            // Filter by minimum score threshold
+            if (segment.alignmentScore < CONFIG.gradient.minScore) {
+                return;
             }
 
             const color = this.getSegmentColor(segment.alignmentScore);
+            const opacity = this.getSegmentOpacity(segment.alignmentScore);
             const weight = this.getSegmentWeight(segment.highway);
             
             const polyline = L.polyline([
@@ -107,7 +110,7 @@ export class MapManager {
             ], {
                 color: color,
                 weight: weight,
-                opacity: 1.0
+                opacity: opacity
             });
 
             // Add popup with segment info
@@ -128,12 +131,25 @@ export class MapManager {
      * @returns {string} Hex color
      */
     getSegmentColor(score) {
-        // Interpolate between low alignment (blue) and high alignment (orange)
-        const r = Math.round(255 * score + 78 * (1 - score));
-        const g = Math.round(107 * score + 205 * (1 - score));
-        const b = Math.round(53 * score + 196 * (1 - score));
+        // Normalize score to the configured range
+        const normalizedScore = (score - CONFIG.gradient.minScore) / 
+                               (CONFIG.gradient.maxScore - CONFIG.gradient.minScore);
+        const clampedScore = Math.max(0, Math.min(1, normalizedScore));
         
-        return `rgb(${r}, ${g}, ${b})`;
+        return interpolateColorHsl(
+            CONFIG.gradient.lowAlignment,
+            CONFIG.gradient.highAlignment,
+            clampedScore
+        );
+    }
+
+    /**
+     * Get opacity for segment based on alignment score using bezier curve
+     * @param {number} score - Alignment score (0-1)
+     * @returns {number} Opacity (0-1)
+     */
+    getSegmentOpacity(score) {
+        return interpolateOpacityBezier(score, CONFIG.gradient.opacityBezier);
     }
 
     /**

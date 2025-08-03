@@ -51,6 +51,7 @@ src/
 ├── utils/
 │   ├── constants.js    # Configuration and API endpoints
 │   ├── geometry.js     # Bearing/azimuth mathematical calculations
+│   ├── colors.js       # Color conversion and gradient utilities
 │   └── cache.js        # Data caching utilities
 └── styles/
     └── main.css        # Application styles
@@ -95,7 +96,23 @@ Key settings in `src/utils/constants.js`:
 - Map defaults (zoom levels, center coordinates)
 - API endpoints and timeouts
 - Street type filters
-- Color scheme for visualization
+- **Gradient system configuration**:
+  - Color scheme for visualization (`gradient.highAlignment`, `gradient.lowAlignment`)
+  - Score range filtering (`gradient.minScore`, `gradient.maxScore`)
+  - Bezier curve opacity control (`gradient.opacityBezier`)
+
+## Visualization System
+
+### Color and Opacity Management
+The application uses an advanced HSL-based gradient system with configurable parameters:
+
+- **HSL Color Interpolation**: Colors transition smoothly without muddy intermediate values
+- **Score Range Filtering**: Only segments above `gradient.minScore` are rendered
+- **Bezier Curve Opacity**: Opacity follows a customizable bezier curve for nuanced visual representation
+- **Modular Color Utilities**: Located in `src/utils/colors.js` with reusable functions:
+  - `interpolateColorHsl()`: HSL-based color interpolation
+  - `interpolateOpacityBezier()`: Bezier curve opacity calculation
+  - `generateHslGradient()`: CSS gradient generation
 
 ## Coding Conventions
 
