@@ -17,7 +17,7 @@ export class SolarCalculator {
      * @returns {number} Sun azimuth in degrees (0-360)
      */
     getSunAzimuth(date, lat, lng, isSunrise = true) {
-        const cacheKey = `${date.toDateString()}_${lat.toFixed(4)}_${lng.toFixed(4)}_${isSunrise}`;
+        const cacheKey = `${date.toDateString()}_${lat.toFixed(6)}_${lng.toFixed(6)}_${isSunrise}`;
         
         if (this.cache.has(cacheKey)) {
             return this.cache.get(cacheKey);

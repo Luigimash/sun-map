@@ -19,10 +19,10 @@ export class HeatmapManager {
     calculateAlignmentScores(segments, sunAzimuth) {
         this.currentSunAzimuth = sunAzimuth;
         
-        const cacheKey = `alignment_${sunAzimuth.toFixed(2)}`;
+        const cacheKey = `alignment_${sunAzimuth.toFixed(4)}`;
         
         return segments.map(segment => {
-            const segmentCacheKey = `${cacheKey}_${segment.bearing.toFixed(2)}`;
+            const segmentCacheKey = `${cacheKey}_${segment.bearing.toFixed(4)}`;
             
             let alignmentScore;
             if (calculationCache.has(segmentCacheKey)) {

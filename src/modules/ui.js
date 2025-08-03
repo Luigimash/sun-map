@@ -293,7 +293,7 @@ export class UIManager {
         if (stats && stats.total > 0) {
             statsElement.innerHTML = `
                 <div>Total segments: ${stats.total}</div>
-                <div>Average alignment: ${(stats.averageScore * 100).toFixed(1)}%</div>
+                <div>Average alignment: ${(stats.averageScore * 100).toFixed(2)}%</div>
                 <div>Perfect alignments: ${stats.perfectAlignments}</div>
             `;
         } else {

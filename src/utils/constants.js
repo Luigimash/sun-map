@@ -35,11 +35,28 @@ export const CONFIG = {
         ],
         excludedTypes: ['motorway', 'trunk'],
         batching: {
-            bearingTolerance: 2.5,      // ±0.75° for segment similarity. Units in degrees
-            minBatchLength: 50,         // 50 meters minimum length. Units in meters
+            bearingTolerance: 1.0,      // ±1.0° for segment similarity. Units in degrees
+            minBatchLength: 1,         // 50 meters minimum length. Units in meters
             maxBearingDrift: 1.0,       // 1° total accumulated drift limit
             requireBatching: true       // Only render successfully batched segments
         }
+    },
+    optimalDay: {
+        // Cache settings
+        cacheMaxSize: 100,              // Maximum number of cached calculations
+        cacheTimeoutHours: 24,          // Cache timeout in hours
+        
+        // Calculation settings
+        progressUpdateInterval: 10,     // Update progress every N days
+        yieldInterval: 20,              // Yield control every N days to prevent UI blocking
+        
+        // Result filtering
+        minAlignmentScore: 0.5,         // Minimum alignment score to consider "optimal"
+        maxResults: 5,                  // Maximum number of top results to return
+        
+        // Date range settings
+        searchYearsAhead: 1,            // Allow searching this many years ahead
+        includeLeapYears: true          // Include leap year calculations
     }
 };
 

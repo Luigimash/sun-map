@@ -129,6 +129,168 @@ main {
     border: 1px solid #ddd;
 }
 
+/* Street popup styling */
+.street-popup {
+    min-width: 280px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.segment-info {
+    margin-bottom: 0.75rem;
+    line-height: 1.4;
+}
+
+.optimal-day-loading {
+    padding: 1rem 0;
+    text-align: center;
+    color: #666;
+}
+
+.loading-spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #007bff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 0.5rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+    display: block;
+    font-size: 0.875rem;
+    margin-bottom: 0.75rem;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 6px;
+    background-color: #e9ecef;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background-color: #007bff;
+    transition: width 0.3s ease;
+}
+
+.optimal-day-results {
+    border-top: 1px solid #dee2e6;
+    padding-top: 0.75rem;
+}
+
+.optimal-day-success {
+    color: #333;
+}
+
+.optimal-days-list {
+    margin: 0.75rem 0;
+}
+
+.optimal-day-item {
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    background: #f8f9fa;
+    border-radius: 6px;
+    border-left: 3px solid #dee2e6;
+    transition: all 0.2s;
+}
+
+.optimal-day-item.best-day {
+    background: #fff3cd;
+    border-left-color: #ffc107;
+}
+
+.optimal-day-item:last-child {
+    margin-bottom: 0;
+}
+
+.optimal-day-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.optimal-day-header strong {
+    font-size: 0.9rem;
+    color: #333;
+}
+
+.alignment-score {
+    font-weight: 600;
+    color: #28a745;
+    font-size: 0.9rem;
+}
+
+.optimal-day-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.time-info {
+    flex: 1;
+}
+
+.jump-to-date-btn {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.jump-to-date-btn.small {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+}
+
+.jump-to-date-btn:hover {
+    background: #1e7e34;
+}
+
+.optimal-day-error {
+    color: #dc3545;
+    padding: 0.5rem;
+    background: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 4px;
+    font-size: 0.875rem;
+}
+
+.optimal-day-no-results {
+    color: #856404;
+    padding: 0.5rem;
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 4px;
+    font-size: 0.875rem;
+}
+
+/* Leaflet popup adjustments */
+.leaflet-popup-content-wrapper {
+    padding: 0;
+}
+
+.leaflet-popup-content {
+    margin: 1rem;
+    line-height: 1.4;
+}
+
 @media (max-width: 768px) {
     .header {
         flex-direction: column;
@@ -143,5 +305,23 @@ main {
         bottom: 10px;
         right: 10px;
         left: 10px;
+    }
+    
+    .street-popup {
+        min-width: 260px;
+    }
+    
+    .optimal-day-item {
+        padding: 0.5rem;
+    }
+    
+    .optimal-day-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+    }
+    
+    .optimal-day-details {
+        font-size: 0.75rem;
     }
 }

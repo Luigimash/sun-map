@@ -3,6 +3,7 @@ import { SolarCalculator } from './modules/solar.js';
 import { StreetDataManager } from './modules/streets.js';
 import { HeatmapManager } from './modules/heatmap.js';
 import { UIManager } from './modules/ui.js';
+import { OptimalDayCalculator } from './modules/optimal-day.js';
 import { CONFIG } from './utils/constants.js';
 
 /**
@@ -15,6 +16,7 @@ class SunMapApp {
         this.streetDataManager = null;
         this.heatmapManager = null;
         this.uiManager = null;
+        this.optimalDayCalculator = null;
         this.isInitialized = false;
     }
 
@@ -31,6 +33,7 @@ class SunMapApp {
             this.streetDataManager = new StreetDataManager();
             this.heatmapManager = new HeatmapManager();
             this.uiManager = new UIManager();
+            this.optimalDayCalculator = new OptimalDayCalculator();
 
             // Initialize UI
             this.uiManager.init();
@@ -43,6 +46,9 @@ class SunMapApp {
 
             // Set up map callbacks
             this.setupMapCallbacks();
+
+            // Set up optimal day functionality
+            this.setupOptimalDayCallbacks();
 
             this.isInitialized = true;
             console.log('Application initialized successfully');
@@ -79,6 +85,27 @@ class SunMapApp {
     }
 
     /**
+     * Set up optimal day calculation callbacks
+     */
+    setupOptimalDayCallbacks() {
+        console.log('Setting up optimal day callbacks...');
+        
+        // Set up optimal day calculation callback
+        this.mapManager.setOptimalDayCalculationCallback(async (streetBearing, lat, lng, progressCallback) => {
+            console.log('Optimal day calculation callback triggered');
+            return await this.handleOptimalDayCalculation(streetBearing, lat, lng, progressCallback);
+        });
+
+        // Set up jump to date callback
+        this.mapManager.setJumpToDateCallback((date, isSunrise) => {
+            console.log('Jump to date callback triggered');
+            this.handleJumpToDate(date, isSunrise);
+        });
+        
+        console.log('Optimal day callbacks setup complete');
+    }
+
+    /**
      * Handle map update request
      * @param {Object} data - Form data {date, isSunrise}
      */
@@ -104,7 +131,7 @@ class SunMapApp {
                 data.isSunrise
             );
 
-            console.log(`Sun azimuth: ${sunAzimuth.toFixed(1)}°`);
+            console.log(`Sun azimuth: ${sunAzimuth.toFixed(2)}°`);
 
             // Fetch street data
             const segments = await this.streetDataManager.fetchStreetData(bounds);
@@ -167,6 +194,70 @@ class SunMapApp {
         // Check if user needs to zoom in
         if (this.streetDataManager.areBoundsTooLarge(bounds)) {
             this.uiManager.showInfo('Zoom in closer for better performance', 2000);
+        }
+    }
+
+    /**
+     * Handle optimal day calculation request
+     * @param {number} streetBearing - Street bearing in degrees
+     * @param {number} lat - Latitude
+     * @param {number} lng - Longitude  
+     * @param {Function} progressCallback - Progress callback function
+     * @returns {Promise<Object>} Optimal day calculation result
+     */
+    async handleOptimalDayCalculation(streetBearing, lat, lng, progressCallback) {
+        try {
+            console.log(`Calculating optimal day for street bearing ${streetBearing}° at ${lat.toFixed(4)}, ${lng.toFixed(4)}`);
+            
+            const result = await this.optimalDayCalculator.findOptimalDayWithProgress(
+                streetBearing,
+                lat,
+                lng,
+                progressCallback,
+                {
+                    year: new Date().getFullYear(),
+                    includeSunrise: true,
+                    includeSunset: true
+                }
+            );
+
+            console.log('Optimal day calculation completed:', result);
+            return result;
+
+        } catch (error) {
+            console.error('Error in optimal day calculation:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Handle jump to date request
+     * @param {Date} date - Target date
+     * @param {boolean} isSunrise - True for sunrise, false for sunset
+     */
+    handleJumpToDate(date, isSunrise) {
+        try {
+            console.log(`Jumping to date: ${date.toDateString()}, ${isSunrise ? 'sunrise' : 'sunset'}`);
+            
+            // Update the UI date/time controls
+            this.uiManager.setFormData({
+                date: date,
+                isSunrise: isSunrise
+            });
+            
+            // Automatically trigger map update with the new date/time
+            const updateData = {
+                date: date,
+                isSunrise: isSunrise
+            };
+            
+            this.handleMapUpdate(updateData);
+            
+            this.uiManager.showInfo(`Jumped to ${date.toLocaleDateString()} at ${isSunrise ? 'sunrise' : 'sunset'}`);
+
+        } catch (error) {
+            console.error('Error jumping to date:', error);
+            this.uiManager.showError('Failed to jump to date. Please try again.');
         }
     }
 
