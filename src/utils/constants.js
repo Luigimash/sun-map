@@ -33,7 +33,13 @@ export const CONFIG = {
             'primary', 'secondary', 'tertiary', 'residential',
             'footway', 'cycleway', 'path'
         ],
-        excludedTypes: ['motorway', 'trunk']
+        excludedTypes: ['motorway', 'trunk'],
+        batching: {
+            bearingTolerance: 2.5,      // ±0.75° for segment similarity. Units in degrees
+            minBatchLength: 50,         // 50 meters minimum length. Units in meters
+            maxBearingDrift: 1.0,       // 1° total accumulated drift limit
+            requireBatching: true       // Only render successfully batched segments
+        }
     }
 };
 

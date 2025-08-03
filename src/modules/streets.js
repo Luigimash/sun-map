@@ -1,5 +1,5 @@
 import { CONFIG, OVERPASS_QUERY_TEMPLATE } from '../utils/constants.js';
-import { processStreetSegments } from '../utils/geometry.js';
+import { processStreetSegments, batchStraightSegments } from '../utils/geometry.js';
 import { streetCache } from '../utils/cache.js';
 
 /**
@@ -97,9 +97,9 @@ export class StreetDataManager {
     }
 
     /**
-     * Process OSM data into street segments
+     * Process OSM data into batched street segments
      * @param {Object} osmData - Raw OSM data from Overpass API
-     * @returns {Array} Array of street segments
+     * @returns {Array} Array of batched street segments
      */
     processOsmData(osmData) {
         if (!osmData.elements || !Array.isArray(osmData.elements)) {
@@ -107,21 +107,29 @@ export class StreetDataManager {
             return [];
         }
 
-        const segments = [];
+        const batchedSegments = [];
+        let totalOriginalSegments = 0;
         
         osmData.elements.forEach(element => {
             if (element.type === 'way' && element.geometry) {
                 try {
+                    // Process way into individual segments
                     const waySegments = processStreetSegments(element);
-                    segments.push(...waySegments);
+                    totalOriginalSegments += waySegments.length;
+                    
+                    // Batch segments into straight sections
+                    const batched = batchStraightSegments(waySegments, CONFIG.streets.batching);
+                    batchedSegments.push(...batched);
                 } catch (error) {
                     console.warn('Error processing OSM way:', element.id, error);
                 }
             }
         });
 
-        console.log(`Processed ${segments.length} street segments`);
-        return segments;
+        console.log(`Processed ${totalOriginalSegments} original segments into ${batchedSegments.length} batched segments`);
+        console.log(`Filtering applied: min length ${CONFIG.streets.batching.minBatchLength}m, require batching: ${CONFIG.streets.batching.requireBatching}`);
+        
+        return batchedSegments;
     }
 
     /**

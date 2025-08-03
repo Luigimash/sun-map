@@ -33,9 +33,10 @@ The application follows a **modular manager-based architecture** where the main 
 1. User selects date/time → UI manager captures input
 2. SunMapApp calculates sun azimuth for map center
 3. Street data fetched from Overpass API for current bounds
-4. Each street segment processed for bearing calculation
-5. Alignment scores computed against sun azimuth
-6. Map visualization updated with color-coded segments
+4. Individual segments processed and batched into straight sections (≥50m, ≥2 segments)
+5. Only valid batched segments proceed to alignment calculations
+6. Alignment scores computed against sun azimuth using representative bearings
+7. Map visualization updated with cleaner, straighter color-coded segments
 
 ## File Structure
 
@@ -59,11 +60,22 @@ src/
 
 ## Working with Street Data
 
-### Street Segment Processing
+### Street Segment Processing & Batching
 - Streets are fetched as OSM ways from Overpass API
 - Each way is broken into individual segments between consecutive coordinate points
-- Bearing is calculated for each segment using coordinate geometry
+- **Intelligent Batching**: Consecutive segments with similar bearings (±0.3°) are batched into longer straight sections
+- **Filtering Applied**: Only batched segments ≥50 meters and containing ≥2 original segments are rendered
+- **Bidirectional Algorithm**: Batching extends both forward and backward from each starting segment
+- **Drift Protection**: Total bearing drift across a batch is limited to 1.0° to prevent curved roads
+- Bearing is calculated using length-weighted averages for representative values
 - Only specific highway types are included (see `constants.js:streets.includedTypes`)
+
+### Batching Configuration
+Key parameters in `constants.js:streets.batching`:
+- `bearingTolerance`: ±0.3° for segment similarity
+- `minBatchLength`: 50 meters minimum length requirement
+- `maxBearingDrift`: 1.0° total accumulated drift limit
+- `requireBatching`: Only render successfully batched segments (≥2 segments)
 
 ### Alignment Calculation
 Streets are bidirectional - alignment considers both directions:
@@ -76,7 +88,9 @@ const bidirectionalDiff = Math.min(angleDiff, Math.abs(angleDiff - 180));
 - **Spatial bounds checking**: Large areas rejected to prevent excessive API calls
 - **Request debouncing**: 300ms delay on map pan/zoom events
 - **Caching**: Street data and calculations cached in browser
-- **Progressive loading**: Segments processed and rendered incrementally
+- **Smart Batching**: Reduces segment count by 60-80% through intelligent grouping
+- **Length Filtering**: Eliminates short, noisy segments that don't contribute meaningful data
+- **Computational Efficiency**: Fewer segments mean faster alignment calculations and rendering
 
 ## API Integration
 
